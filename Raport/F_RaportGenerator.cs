@@ -116,10 +116,10 @@ namespace Raport
                 //MessageBox.Show(fileContent);
                 Clipboard.Clear();
                 Clipboard.SetText(fileContent);
-                //usuwam spacje
-                //fileContent = fileContent.Trim(' ', '"');
 
-                
+                MessageBox.Show("Zakończono parsowanie pliku. Wynik w schowku.");
+                textBox1.Text = fileContent;
+                //fileContent = fileContent.Trim(' ', '"');                
             }
         }
 
@@ -133,6 +133,11 @@ namespace Raport
             {
                 throw new NotImplementedException();
             }
+        }
+
+        private void zrodlaToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Plik zródłowy Metasploit > Porty (csv) \n- polecenie w konsoli msfconsole: \n[services -u -c name,proto -o /home/user/export_wynik.csv] \n- wynik działania programu zapisuje się w pamięci podręcznej (schowek).");
         }
 
         private void WalidujMetasploitPortyCSV()
