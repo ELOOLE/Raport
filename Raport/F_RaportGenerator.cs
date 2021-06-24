@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Xceed.Document.NET;
+using Xceed.Words.NET;
 
 namespace Raport
 {
@@ -119,8 +121,38 @@ namespace Raport
 
                 MessageBox.Show("Zakończono parsowanie pliku. Wynik w schowku.");
                 textBox1.Text = fileContent;
+                StworzWord();
                 //fileContent = fileContent.Trim(' ', '"');                
             }
+        }
+
+        private void StworzWord()
+        {
+            string NazwaPliku = Path.GetFileName(filePath) + "_tmp";
+            string KatalogZapisu = Path.GetDirectoryName(filePath);
+            var doc = DocX.Create(KatalogZapisu + "\\" + NazwaPliku);
+
+
+            Table t = doc.AddTable(textBox1.Lines.Count(), 3);
+            t.Alignment = Alignment.center;
+            t.Design = TableDesign.ColorfulList;
+            //Fill cells by adding text.  
+
+            string[] linijka;
+
+            for(int i=0; i<textBox1.Lines.Count()-1;i++)
+            {
+                linijka = textBox1.Lines[i].Split(';');
+                t.Rows[i].Cells[0].Paragraphs.First().Append(linijka[0]);
+                t.Rows[i].Cells[1].Paragraphs.First().Append(linijka[1]);
+                t.Rows[i].Cells[2].Paragraphs.First().Append(linijka[2]);
+            }
+            
+            doc.InsertParagraph("Hello Word");
+
+            doc.InsertTable(t);
+
+            doc.Save();
         }
 
         public class Host : IEquatable<Host>
