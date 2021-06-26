@@ -16,7 +16,6 @@ namespace Raport
     public partial class F_RaportGenerator : Form
     {
         private string filePath, fileContent;
-        
 
         public F_RaportGenerator()
         {
@@ -39,27 +38,19 @@ namespace Raport
                 //Get the path of specified file
                 filePath = openFileDialog1.FileName;
 
-                //Read the contents of the file into a stream
                 var fileStream = openFileDialog1.OpenFile();
                 string linijka;
                 System.IO.StreamReader file = new System.IO.StreamReader(filePath);
-                //using (StreamReader reader = new StreamReader(fileStream))
-                //{
-                //fileContent = reader.ReadToEnd();
+
                 while ((linijka = file.ReadLine()) != null)
                 {
-                    //MessageBox.Show(linijka);
                     array_linijka = linijka.Split(',');
                     host = array_linijka[0].Trim(' ', '"');
                     port = array_linijka[1].Trim(' ', '"');
                     proto = array_linijka[2].Trim(' ', '"');
-                    //linijka = linijka.Trim(new Char[] { ' ', '"', '.' });
-                    //fileContent += linijka.ToString();
-                    //MessageBox.Show($"host: {host}, port: {port}, proto: {proto}");
                     
                     if(list_wynik_host.Exists(x => x.HostIP.Equals(host)))
                     {
-                        //MessageBox.Show("istnieje");
                         if(proto.ToLower() == "tcp")
                         {
                             if(!string.IsNullOrEmpty(list_wynik_host.Find(x => x.HostIP == host).PortTCP.ToString()))
@@ -101,7 +92,7 @@ namespace Raport
                         }
                     }
                 }
-                //}
+
                 fileContent = "";
 
                 string porttcp, portudp;
@@ -114,15 +105,12 @@ namespace Raport
                     fileContent += host + ";" + porttcp + ";" + portudp;
                     fileContent += System.Environment.NewLine;
                 }
-
-                //MessageBox.Show(fileContent);
                 Clipboard.Clear();
                 Clipboard.SetText(fileContent);
 
                 MessageBox.Show("Zakończono parsowanie pliku. Wynik w schowku.");
                 textBox1.Text = fileContent;
                 StworzWord();
-                //fileContent = fileContent.Trim(' ', '"');                
             }
         }
 
@@ -131,7 +119,6 @@ namespace Raport
             string NazwaPliku = Path.GetFileName(filePath) + "_tmp";
             string KatalogZapisu = Path.GetDirectoryName(filePath);
             var doc = DocX.Create(KatalogZapisu + "\\" + NazwaPliku);
-
 
             Table t = doc.AddTable(textBox1.Lines.Count(), 3);
             t.Alignment = Alignment.center;
@@ -148,10 +135,8 @@ namespace Raport
                 t.Rows[i].Cells[2].Paragraphs.First().Append(linijka[2]);
             }
             
-            doc.InsertParagraph("Hello Word");
-
+            doc.InsertParagraph("Parsowanie pliku w formie tabelki poniżej:");
             doc.InsertTable(t);
-
             doc.Save();
         }
 
@@ -171,12 +156,5 @@ namespace Raport
         {
             MessageBox.Show("Plik zródłowy Metasploit > Porty (csv) \n- polecenie w konsoli msfconsole: \n[services -u -c name,proto -o /home/user/export_wynik.csv] \n- wynik działania programu zapisuje się w pamięci podręcznej (schowek).");
         }
-
-        private void WalidujMetasploitPortyCSV()
-        {
-            //services -u -c name,proto -o /home/user/export_wynik.csv
-
-        }
-
     }
 }
